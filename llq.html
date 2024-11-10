@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>多浏览器嵌套页面</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .search-input {
+            width: 50%;
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .search-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007aff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background-color: #005bb5;
+        }
+
+        .iframe-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .iframe-container iframe {
+            flex: 1;
+            border: none;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="search-container">
+    <input
+            class="search-input"
+            id="searchInput"
+            placeholder="请输入搜索关键字"
+            type="text"
+    />
+    <button class="search-button" onclick="performSearch()">搜索</button>
+</div>
+
+<div class="iframe-container">
+    <iframe id="iframe360" src="https://www.so.com"></iframe>
+    <iframe id="iframeBing" src="https://cn.bing.com"></iframe>
+    <iframe id="iframeSogou" src="https://www.sogou.com"></iframe>
+</div>
+
+<script>
+    // 执行搜索
+    let lastSearchTime = 0;
+    function performSearch() {
+        const keyword = document.getElementById("searchInput").value.trim();
+        if (!keyword) {
+            alert("请输入搜索关键字！");
+            return;
+        }
+        const now = Date.now();
+        if (now - lastSearchTime < 5000) {
+            alert("请稍后再试，避免被搜索引擎识别为机器人！");
+            return;
+        }
+
+        const encodedKeyword = encodeURIComponent(keyword);
+
+        // 更新每个 iframe 的 URL
+        document.getElementById("iframe360").src =
+            `https://www.so.com/s?q=${encodedKeyword}`;
+        document.getElementById("iframeBing").src =
+            `https://cn.bing.com/search?q=${encodedKeyword}`;
+        document.getElementById("iframeSogou").src =
+            `https://www.sogou.com/web?query=${encodedKeyword}`;
+    }
+
+    // 监听回车键
+    document.getElementById("searchInput").addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            performSearch();
+        }
+    });
+</script>
+</body>
+</html>
